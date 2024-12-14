@@ -1,4 +1,5 @@
 import { createStore } from 'redux'
+import { myCreateStore } from './my-redux'
 const postCountElement= document.querySelector('.post-count')
 
 const initialState = {
@@ -28,21 +29,35 @@ function reducer(state = initialState, action) {
 }
 
 const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__?.())
+const myStore= myCreateStore(reducer)
+console.log(store);
+console.log(myStore);
 
-console.log(store)
-
-store.subscribe(() => {
-  console.log(store.getState())
-  postCountElement.innerText = store.getState().post
+const unsubscribe1=myStore.subscribe(() => {
+  console.log(myStore.getState())
+  postCountElement.innerText = myStore.getState().post
 })
 
-postCountElement.innerText = store.getState().post
+const unsubscribe2=myStore.subscribe(() => {
+  console.log('hiii')
+})
 
-store.dispatch({ type: INCREMENT })
-store.dispatch({ type: DECREMENT })
-store.dispatch({ type: INCREASE_BY, payload: 15 })
-store.dispatch({ type: DECREASE_BY, payload: 5 })
+const unsubscribe3=myStore.subscribe(() => {
+  console.log('hello')
+})
 
+postCountElement.innerText = myStore.getState().post
+
+myStore.dispatch({ type: INCREMENT })
+console.log(myStore.getState())
+myStore.dispatch({ type: DECREMENT })
+console.log(myStore.getState())
+myStore.dispatch({ type: INCREASE_BY, payload: 15 })
+console.log(myStore.getState())
+myStore.dispatch({ type: DECREASE_BY, payload: 5 })
+console.log(myStore.getState())
+
+unsubscribe1()
 postCountElement.addEventListener('click',()=>{
   store.dispatch({ type: INCREMENT })
 })
